@@ -6,6 +6,8 @@
 #define CDAILY_FUNCTION_H
 
 #include <mem.h>
+# include <stdio.h>
+# include <stdlib.h>
 
 int gameFormNum = 0;
 int schoolFormNum = 0;
@@ -28,36 +30,99 @@ struct gameName {
 void NoneAvoid() {
     printf("输入不合法\n");
 }
+void bubble_sort(int arr[], int len,int sym[]) {
+    int i, j, temp;
+    for (i = 0; i < len - 1; i++)
+        for (j = 0; j < len - 1 - i; j++)
+            if (arr[j] > arr[j + 1]) {
+                temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                temp = sym[j];
+                sym[j] = sym[j + 1];
+                sym[j + 1] = temp;
+            }
+}
+
 void Load() {
+
     //加载学校
-    char filename1[] = "./SQL/School/schoolName.txt"; //文件名
+
     FILE *fp1;
     FILE *fp2;
+    FILE *fp3;
+    FILE *fp4;
+    FILE *fp5;
+
+    char filename1[] = "./SQL/School/schoolName.txt"; //文件名
     char StrLine[1024];             //每行最大读取的字符数
     fp1 = fopen(filename1,"r");
-    while (!feof(fp1)) {
-        fgets(StrLine, 1024, fp1);  //读取一行
-        //printf("%s\n", StrLine); //输出
-        strcpy(schoolName[schoolFormNum].name,StrLine);
-        schoolFormNum++;
+    if(fp1!=NULL)
+    {
+        while (!feof(fp1)) {
+            fgets(StrLine, 1024, fp1);  //读取一行
+            //printf("%s\n", StrLine); //输出
+            strcpy(schoolName[schoolFormNum].name,StrLine);
+            schoolFormNum++;
+        }
     }
+
     fclose(fp1);                     //关闭文件
+
     //加载比赛
     strcpy(filename1,"./SQL/Game/gameName.txt");
     char filename2[]="./SQL/Game/gameType.txt";
+
     fp1 = fopen(filename1,"r");
     fp2 = fopen(filename2,"r");
-    while (!feof(fp1)) {
-        fgets(StrLine, 1024, fp1);  //读取一行
-        //printf("%s\n", StrLine); //输出
-        strcpy(gameName[gameFormNum].name,StrLine);
-        fgets(StrLine, 1024, fp2);  //读取一行
-        gameName[gameFormNum].type= (int) (StrLine - '0');
-        gameFormNum++;
+    if(fp1!=NULL)
+    {
+        while (!feof(fp1)) {
+            fgets(StrLine, 1024, fp1);
+            strcpy(gameName[gameFormNum].name, StrLine);
+            fgets(StrLine, 1024, fp2);
+            gameName[gameFormNum].type = (int) (StrLine - '0');
+            gameFormNum++;
+        }
     }
     fclose(fp1);
     fclose(fp2);
+
+
     //加载主数据
+    strcpy(filename1,"./SQL/Form/authName.txt");
+    strcpy(filename2,"./SQL/Form/gameName.txt");
+    char filename3[]="./SQL/Form/schoolName.txt";
+    char filename4[]="./SQL/Form/rank.txt";
+    char filename5[]="./SQL/Form/score.txt";
+    fp1 = fopen(filename1,"r");
+    fp2 = fopen(filename2,"r");
+    fp3 = fopen(filename3,"r");
+    fp4 = fopen(filename4,"r");
+    fp5 = fopen(filename5,"r");
+    if(fp1!=NULL)
+    {
+        while (!feof(fp1)) {
+            fgets(StrLine, 1024, fp1);
+            strcpy(gameForm[FormNum].authName,StrLine);
+            fgets(StrLine, 1024, fp2);
+            strcpy(gameForm[FormNum].gameName,StrLine);
+            fgets(StrLine, 1024, fp3);
+            strcpy(gameForm[FormNum].schoolName,StrLine);
+            fgets(StrLine, 1024, fp4);
+            gameForm[FormNum].rank= (int) (StrLine - '0');
+            fgets(StrLine, 1024, fp5);
+            gameForm[FormNum].score= (int) (StrLine - '0');
+
+            FormNum++;
+        }
+    }
+
+    fclose(fp1);
+    fclose(fp2);
+    fclose(fp3);
+    fclose(fp4);
+    fclose(fp5);
 
 
 }
@@ -65,11 +130,16 @@ void Load() {
 void AddScore() {
     printf("选择比赛\n");
     int j;
-    for (j = 0; gameName[j + 1].name != NULL; j++) {
+    if(gameFormNum==0)
+    {
+        printf("先添加比赛？");
+        return;
+    }
+    for (j = 0; j<gameFormNum; j++) {
         printf("%d:%s\n", j, gameName[j].name);
     }
     int i = 0;
-    scanf("%d", i);
+    scanf("%d", &i);
     if (i > j) {
         NoneAvoid();
         return;
@@ -86,10 +156,15 @@ void AddScore() {
     for (int i_q = 1; i_q <= q; i_q++) {
         printf("第%d名录入\n", i_q);
         printf("选择学校\n");
-        for (j = 0; schoolName[j + 1].name != NULL; j++) {
+        if(gameFormNum==0)
+        {
+            printf("先添加学校？");
+            return;
+        }
+        for (j = 0; j<schoolFormNum; j++) {
             printf("%d:%s\n", j, schoolName[j].name);
         }
-        scanf("%d", i);
+        scanf("%d", &i);
         if (i > j) {
             NoneAvoid();
             return;
@@ -150,60 +225,199 @@ void AddScore() {
 }
 
 void Sort() {
-
+    int tmp[FormNum];
+    int Syntmp[FormNum];
+    for(int i=0;i<FormNum;i++)
+    {
+        Syntmp[i]=i;
+    }
+    for (int i = 0; i<FormNum; i++) {
+        int j=0;
+        for(j=0;!strcmp(gameForm[i].schoolName,gameName[j].name);j++);
+        tmp[j+1]+=gameForm[i].score;
+    }
+    //int len = (int) sizeof(tmp) / sizeof(*tmp);
+    bubble_sort(tmp, FormNum,Syntmp);
+    for (int i = 0; i < FormNum; i++)
+        printf("第%d的是%s，总分%d ",i+1,schoolName[Syntmp[i]].name, tmp[i]);
 }
 
-void Change() {
+void Change()
+{
+    printf("选择比赛\n");
+    int j;
+    for (j = 0; j<gameFormNum; j++) {
+        printf("%d:%s\n", j, gameName[j].name);
+    }
+    int i = 0;
+    scanf("%d", &i);
+    if (i > j) {
+        NoneAvoid();
+        return;
+    }
+    char tmp[100]="";
+    strcpy(tmp,gameName[i].name);
 
-}
+    printf("选择名次\n");
+    scanf("%d", &i);
+    char tmp1[100];
+    char tmp2[100];
+    printf("修改学校名为：\n");
+    scanf("%s", tmp1);
+    printf("修改选手名为：\n");
+    scanf("%s", tmp2);
+    int flag=0;
+    for (j = 0; j<FormNum; j++)
+    {
+        if((!strcmp(tmp,gameForm[j].gameName))&&i==gameForm[j].rank)
+        {
+            strcpy(tmp1,gameForm[j].schoolName);
+            strcpy(tmp2,gameForm[j].authName);
+            flag=1;
+            break;
+        }
+    }
+    if(flag==1)
+    {
+        printf("失败\n");
+    } else
+    {
+        printf("成功\n");
+    }
 
-void Check() {
+/*
+    printf("存在以下项目可修改\n");
+    for (j = 0; j<FormNum; j++) {
+
+        if(!strcmp(tmp,gameForm[j].gameName)) {
+
+            printf("%d:%s %d\n", j, gameForm[j].gameName,gameForm[j].rank);
+
+        }
+    }
+    scanf("%d", &i);*/
+
 
 }
 
 void Save() {
+
+    //保存学校
+
+    FILE *fp1;
+    FILE *fp2;
+    FILE *fp3;
+    FILE *fp4;
+    FILE *fp5;
+
+    char filename1[] = "./SQL/School/schoolName.txt"; //文件名
+    char StrLine[1024];             //每行最大读取的字符数
+    fp1 = fopen(filename1,"w+");
+    for(int i=0;i<schoolFormNum;i++)
+    {
+        strcpy(StrLine,schoolName[i].name);
+        fprintf(fp1,"%s\n",StrLine);
+    }
+    fclose(fp1);                     //关闭文件
+
+    //加载比赛
+    strcpy(filename1,"./SQL/Game/gameName.txt");
+    char filename2[]="./SQL/Game/gameType.txt";
+
+    fp1 = fopen(filename1,"w+");
+    fp2 = fopen(filename2,"w+");
+    for(int i=0;i<gameFormNum;i++)
+    {
+        strcpy(StrLine,gameName[i].name);
+        fprintf(fp1,"%s\n",StrLine);
+        itoa(gameName[i].type, StrLine, 10);
+        fprintf(fp2,"%s\n",StrLine);
+    }
+
+    fclose(fp1);
+    fclose(fp2);
+
+
+    //加载主数据
+    strcpy(filename1,"./SQL/Form/authName.txt");
+    strcpy(filename2,"./SQL/Form/gameName.txt");
+    char filename3[]="./SQL/Form/schoolName.txt";
+    char filename4[]="./SQL/Form/rank.txt";
+    char filename5[]="./SQL/Form/score.txt";
+    fp1 = fopen(filename1,"w+");
+    fp2 = fopen(filename2,"w+");
+    fp3 = fopen(filename3,"w+");
+    fp4 = fopen(filename4,"w+");
+    fp5 = fopen(filename5,"w+");
+
+    for(int i=0;i<FormNum;i++)
+    {
+        strcpy(StrLine,gameForm[i].authName);
+        fprintf(fp1,"%s\n",StrLine);
+        strcpy(StrLine,gameForm[i].gameName);
+        fprintf(fp2,"%s\n",StrLine);
+        strcpy(StrLine,gameForm[i].schoolName);
+        fprintf(fp3,"%s\n",StrLine);
+        itoa(gameForm[i].rank, StrLine, 10);
+        fprintf(fp4,"%s\n",StrLine);
+        itoa(gameForm[i].score, StrLine, 10);
+        fprintf(fp4,"%s\n",StrLine);
+    }
+
+    fclose(fp1);
+    fclose(fp2);
+    fclose(fp3);
+    fclose(fp4);
+    fclose(fp5);
+
 
 }
 
 void AddSchool() {
     char i[100] = "";
     gets(i);
+    gets(i);
     if (i == NULL) {
         NoneAvoid();
         return;
     }
     int j;
-    for (j = 0; schoolName[j + 1].name != NULL; j++) {
+    for (j = 0; j<schoolFormNum; j++) {
         if (schoolName[j].name == i) {
             printf("已存在");
             return;
         }
     }
-    strcpy(schoolName[j + 1].name, i);
+    strcpy(schoolName[j].name, i);
+    schoolFormNum+=1;
     printf("已添加");
 }
 
 void AddGame() {
     char i[100] = "";
     gets(i);
+    gets(i);
     if (i == NULL) {
         NoneAvoid();
         return;
     }
     int j;
-    for (j = 0; gameName[j + 1].name != NULL; j++) {
+    for (j = 0; j<gameFormNum; j++) {
         if (gameName[j].name == i) {
             printf("已存在");
             return;
         }
     }
-    strcpy(gameName[j + 1].name, i);
+    strcpy(gameName[j] .name, i);
     printf("输入比赛积分类型");
     gets(i);
     if (strcmp(i, "1") == 0)
         gameName[j].type = 0;
     else
         gameName[j].type = 1;
+
+    gameFormNum++;
+
     printf("已添加");
 }
 
