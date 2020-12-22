@@ -1,5 +1,5 @@
 //
-// Created by æ˜Ÿæ˜Ÿ on 2020/12/9.
+// Created by ĞÇĞÇ on 2020/12/9.
 //
 
 #ifndef CDAILY_FUNCTION_H
@@ -28,7 +28,7 @@ struct gameName {
 } gameName[100];
 
 void NoneAvoid() {
-    printf("è¾“å…¥ä¸åˆæ³•\n");
+    printf("ÊäÈë²»ºÏ·¨\n");
 }
 void bubble_sort(int arr[], int len,int sym[]) {
     int i, j, temp;
@@ -46,7 +46,7 @@ void bubble_sort(int arr[], int len,int sym[]) {
 
 void Load() {
 
-    //åŠ è½½å­¦æ ¡
+    //¼ÓÔØÑ§Ğ£
 
     FILE *fp1;
     FILE *fp2;
@@ -54,22 +54,25 @@ void Load() {
     FILE *fp4;
     FILE *fp5;
 
-    char filename1[] = "./SQL/School/schoolName.txt"; //æ–‡ä»¶å
-    char StrLine[1024];             //æ¯è¡Œæœ€å¤§è¯»å–çš„å­—ç¬¦æ•°
+    char filename1[] = "./SQL/School/schoolName.txt"; //ÎÄ¼şÃû
+    char StrLine[1024];             //Ã¿ĞĞ×î´ó¶ÁÈ¡µÄ×Ö·ûÊı
     fp1 = fopen(filename1,"r");
     if(fp1!=NULL)
     {
         while (!feof(fp1)) {
-            fgets(StrLine, 1024, fp1);  //è¯»å–ä¸€è¡Œ
-            //printf("%s\n", StrLine); //è¾“å‡º
+            memset(StrLine,0,sizeof(StrLine));
+            fgets(StrLine, 1024, fp1);  //¶ÁÈ¡Ò»ĞĞ
+            if(StrLine[0]==0||StrLine[0]=='\n')
+                break;
+            //printf("%s\n", StrLine); //Êä³ö
             strcpy(schoolName[schoolFormNum].name,StrLine);
             schoolFormNum++;
         }
     }
 
-    fclose(fp1);                     //å…³é—­æ–‡ä»¶
+    fclose(fp1);                     //¹Ø±ÕÎÄ¼ş
 
-    //åŠ è½½æ¯”èµ›
+    //¼ÓÔØ±ÈÈü
     strcpy(filename1,"./SQL/Game/gameName.txt");
     char filename2[]="./SQL/Game/gameType.txt";
 
@@ -78,10 +81,14 @@ void Load() {
     if(fp1!=NULL)
     {
         while (!feof(fp1)) {
+            memset(StrLine,0,sizeof(StrLine));
             fgets(StrLine, 1024, fp1);
+            if(StrLine[0]==0||StrLine[0]=='\n')
+                break;
             strcpy(gameName[gameFormNum].name, StrLine);
+            memset(StrLine,0,sizeof(StrLine));
             fgets(StrLine, 1024, fp2);
-            gameName[gameFormNum].type = (int) (StrLine - '0');
+            gameName[gameFormNum].type = (int) (StrLine[0] - '0');
             gameFormNum++;
         }
     }
@@ -89,7 +96,7 @@ void Load() {
     fclose(fp2);
 
 
-    //åŠ è½½ä¸»æ•°æ®
+    //¼ÓÔØÖ÷Êı¾İ
     strcpy(filename1,"./SQL/Form/authName.txt");
     strcpy(filename2,"./SQL/Form/gameName.txt");
     char filename3[]="./SQL/Form/schoolName.txt";
@@ -103,16 +110,24 @@ void Load() {
     if(fp1!=NULL)
     {
         while (!feof(fp1)) {
+            memset(StrLine,0,sizeof(StrLine));
             fgets(StrLine, 1024, fp1);
+            if(StrLine[0]==0||StrLine[0]=='\n')
+                break;
+
             strcpy(gameForm[FormNum].authName,StrLine);
+            memset(StrLine,0,sizeof(StrLine));
             fgets(StrLine, 1024, fp2);
             strcpy(gameForm[FormNum].gameName,StrLine);
+            memset(StrLine,0,sizeof(StrLine));
             fgets(StrLine, 1024, fp3);
             strcpy(gameForm[FormNum].schoolName,StrLine);
+            memset(StrLine,0,sizeof(StrLine));
             fgets(StrLine, 1024, fp4);
-            gameForm[FormNum].rank= (int) (StrLine - '0');
+            gameForm[FormNum].rank= (int) (StrLine[0] - '0');
+            memset(StrLine,0,sizeof(StrLine));
             fgets(StrLine, 1024, fp5);
-            gameForm[FormNum].score= (int) (StrLine - '0');
+            gameForm[FormNum].score= (int) (StrLine[0] - '0');
 
             FormNum++;
         }
@@ -128,11 +143,11 @@ void Load() {
 }
 
 void AddScore() {
-    printf("é€‰æ‹©æ¯”èµ›\n");
+    printf("Ñ¡Ôñ±ÈÈü\n");
     int j;
     if(gameFormNum==0)
     {
-        printf("å…ˆæ·»åŠ æ¯”èµ›ï¼Ÿ");
+        printf("ÏÈÌí¼Ó±ÈÈü£¿");
         return;
     }
     for (j = 0; j<gameFormNum; j++) {
@@ -147,18 +162,18 @@ void AddScore() {
     struct gameForm tmpForm;
     strcpy(tmpForm.schoolName, schoolName[i].name);
 
-    int q;//å†³å®šåé¢å†™å‡ æ¡æ•°æ®
+    int q;//¾ö¶¨ºóÃæĞ´¼¸ÌõÊı¾İ
     if (gameName[i].type == 0) {
         q = 5;
     } else {
         q = 3;
     }
     for (int i_q = 1; i_q <= q; i_q++) {
-        printf("ç¬¬%dåå½•å…¥\n", i_q);
-        printf("é€‰æ‹©å­¦æ ¡\n");
+        printf("µÚ%dÃûÂ¼Èë\n", i_q);
+        printf("Ñ¡ÔñÑ§Ğ£\n");
         if(gameFormNum==0)
         {
-            printf("å…ˆæ·»åŠ å­¦æ ¡ï¼Ÿ");
+            printf("ÏÈÌí¼ÓÑ§Ğ££¿");
             return;
         }
         for (j = 0; j<schoolFormNum; j++) {
@@ -170,9 +185,12 @@ void AddScore() {
             return;
         }
         strcpy(tmpForm.gameName, gameName[i].name);
-        printf("åå­—\n");
+        printf("Ãû×Ö\n");
         char t[100];
-        strcpy(tmpForm.authName, gets(t));
+        gets(t);
+        memset(t,0,sizeof(t));
+        gets(t);
+        strcpy(tmpForm.authName,t);
         tmpForm.rank = i_q;
         if (q == 3) {
             switch (i_q) {
@@ -213,11 +231,11 @@ void AddScore() {
                 }
             }
         }
-        strcpy(gameForm[FormNum + 1].gameName, tmpForm.gameName);
-        strcpy(gameForm[FormNum + 1].schoolName, tmpForm.schoolName);
-        strcpy(gameForm[FormNum + 1].authName, tmpForm.authName);
-        gameForm[FormNum + 1].rank = tmpForm.rank;
-        gameForm[FormNum + 1].score = tmpForm.score;
+        strcpy(gameForm[FormNum].gameName, tmpForm.gameName);
+        strcpy(gameForm[FormNum].schoolName, tmpForm.schoolName);
+        strcpy(gameForm[FormNum].authName, tmpForm.authName);
+        gameForm[FormNum].rank = tmpForm.rank;
+        gameForm[FormNum].score = tmpForm.score;
         FormNum += 1;
     }
 
@@ -225,26 +243,29 @@ void AddScore() {
 }
 
 void Sort() {
-    int tmp[FormNum];
-    int Syntmp[FormNum];
-    for(int i=0;i<FormNum;i++)
+    int sum[schoolFormNum];
+    memset(sum, 0, sizeof(sum));
+    int Syntmp[schoolFormNum];
+    memset(Syntmp, 0, sizeof(Syntmp));
+    for(int i=0;i<schoolFormNum;i++)
     {
         Syntmp[i]=i;
     }
     for (int i = 0; i<FormNum; i++) {
         int j=0;
-        for(j=0;!strcmp(gameForm[i].schoolName,gameName[j].name);j++);
-        tmp[j+1]+=gameForm[i].score;
+        for(j=0;j<schoolFormNum;j++)
+            if(!strcmp(gameForm[i].schoolName,schoolName[j].name))
+                sum[j]+=gameForm[i].score;
     }
-    //int len = (int) sizeof(tmp) / sizeof(*tmp);
-    bubble_sort(tmp, FormNum,Syntmp);
-    for (int i = 0; i < FormNum; i++)
-        printf("ç¬¬%dçš„æ˜¯%sï¼Œæ€»åˆ†%d ",i+1,schoolName[Syntmp[i]].name, tmp[i]);
+    //int len = (int) sizeof(sum) / sizeof(*sum);
+    bubble_sort(sum, schoolFormNum,Syntmp);
+    for (int i = 0; i < schoolFormNum; i++)
+        printf("µÚ%dµÄÊÇ%s×Ü·ÖÊÇ%d \n",i+1,schoolName[Syntmp[i]].name, sum[i]);
 }
 
 void Change()
 {
-    printf("é€‰æ‹©æ¯”èµ›\n");
+    printf("Ñ¡Ôñ±ÈÈü\n");
     int j;
     for (j = 0; j<gameFormNum; j++) {
         printf("%d:%s\n", j, gameName[j].name);
@@ -258,13 +279,13 @@ void Change()
     char tmp[100]="";
     strcpy(tmp,gameName[i].name);
 
-    printf("é€‰æ‹©åæ¬¡\n");
+    printf("Ñ¡ÔñÃû´Î\n");
     scanf("%d", &i);
     char tmp1[100];
     char tmp2[100];
-    printf("ä¿®æ”¹å­¦æ ¡åä¸ºï¼š\n");
+    printf("ĞŞ¸ÄÑ§Ğ£ÃûÎª£º\n");
     scanf("%s", tmp1);
-    printf("ä¿®æ”¹é€‰æ‰‹åä¸ºï¼š\n");
+    printf("ĞŞ¸ÄÑ¡ÊÖÃûÎª£º\n");
     scanf("%s", tmp2);
     int flag=0;
     for (j = 0; j<FormNum; j++)
@@ -279,14 +300,14 @@ void Change()
     }
     if(flag==1)
     {
-        printf("å¤±è´¥\n");
+        printf("Ê§°Ü\n");
     } else
     {
-        printf("æˆåŠŸ\n");
+        printf("³É¹¦\n");
     }
 
 /*
-    printf("å­˜åœ¨ä»¥ä¸‹é¡¹ç›®å¯ä¿®æ”¹\n");
+    printf("´æÔÚÒÔÏÂÏîÄ¿¿ÉĞŞ¸Ä\n");
     for (j = 0; j<FormNum; j++) {
 
         if(!strcmp(tmp,gameForm[j].gameName)) {
@@ -302,7 +323,7 @@ void Change()
 
 void Save() {
 
-    //ä¿å­˜å­¦æ ¡
+    //±£´æÑ§Ğ£
 
     FILE *fp1;
     FILE *fp2;
@@ -310,17 +331,17 @@ void Save() {
     FILE *fp4;
     FILE *fp5;
 
-    char filename1[] = "./SQL/School/schoolName.txt"; //æ–‡ä»¶å
-    char StrLine[1024];             //æ¯è¡Œæœ€å¤§è¯»å–çš„å­—ç¬¦æ•°
+    char filename1[] = "./SQL/School/schoolName.txt"; //ÎÄ¼şÃû
+    char StrLine[1024];             //Ã¿ĞĞ×î´ó¶ÁÈ¡µÄ×Ö·ûÊı
     fp1 = fopen(filename1,"w+");
     for(int i=0;i<schoolFormNum;i++)
     {
         strcpy(StrLine,schoolName[i].name);
         fprintf(fp1,"%s\n",StrLine);
     }
-    fclose(fp1);                     //å…³é—­æ–‡ä»¶
+    fclose(fp1);                     //¹Ø±ÕÎÄ¼ş
 
-    //åŠ è½½æ¯”èµ›
+    //¼ÓÔØ±ÈÈü
     strcpy(filename1,"./SQL/Game/gameName.txt");
     char filename2[]="./SQL/Game/gameType.txt";
 
@@ -331,14 +352,14 @@ void Save() {
         strcpy(StrLine,gameName[i].name);
         fprintf(fp1,"%s\n",StrLine);
         itoa(gameName[i].type, StrLine, 10);
-        fprintf(fp2,"%s\n",StrLine);
+        fprintf(fp2,"%c\n",StrLine[0]);
     }
 
     fclose(fp1);
     fclose(fp2);
 
 
-    //åŠ è½½ä¸»æ•°æ®
+    //¼ÓÔØÖ÷Êı¾İ
     strcpy(filename1,"./SQL/Form/authName.txt");
     strcpy(filename2,"./SQL/Form/gameName.txt");
     char filename3[]="./SQL/Form/schoolName.txt";
@@ -355,13 +376,13 @@ void Save() {
         strcpy(StrLine,gameForm[i].authName);
         fprintf(fp1,"%s\n",StrLine);
         strcpy(StrLine,gameForm[i].gameName);
-        fprintf(fp2,"%s\n",StrLine);
+        fprintf(fp2,"%s",StrLine);
         strcpy(StrLine,gameForm[i].schoolName);
-        fprintf(fp3,"%s\n",StrLine);
+        fprintf(fp3,"%s",StrLine);
         itoa(gameForm[i].rank, StrLine, 10);
-        fprintf(fp4,"%s\n",StrLine);
+        fprintf(fp4,"%c\n",StrLine[0]);
         itoa(gameForm[i].score, StrLine, 10);
-        fprintf(fp4,"%s\n",StrLine);
+        fprintf(fp5,"%c\n",StrLine[0]);
     }
 
     fclose(fp1);
@@ -374,6 +395,7 @@ void Save() {
 }
 
 void AddSchool() {
+    printf("Ñ§Ğ£Ãû³Æ?\n");
     char i[100] = "";
     gets(i);
     gets(i);
@@ -384,16 +406,17 @@ void AddSchool() {
     int j;
     for (j = 0; j<schoolFormNum; j++) {
         if (schoolName[j].name == i) {
-            printf("å·²å­˜åœ¨");
+            printf("ÒÑ´æÔÚ\n");
             return;
         }
     }
     strcpy(schoolName[j].name, i);
     schoolFormNum+=1;
-    printf("å·²æ·»åŠ ");
+    printf("ÒÑÌí¼Ó\n");
 }
 
 void AddGame() {
+    printf("ÊäÈë±ÈÈüÃû³Æ\n");
     char i[100] = "";
     gets(i);
     gets(i);
@@ -404,12 +427,12 @@ void AddGame() {
     int j;
     for (j = 0; j<gameFormNum; j++) {
         if (gameName[j].name == i) {
-            printf("å·²å­˜åœ¨");
+            printf("ÒÑ´æÔÚ\n");
             return;
         }
     }
     strcpy(gameName[j] .name, i);
-    printf("è¾“å…¥æ¯”èµ›ç§¯åˆ†ç±»å‹");
+    printf("ÊäÈë±ÈÈü»ı·ÖÀàĞÍ\n");
     gets(i);
     if (strcmp(i, "1") == 0)
         gameName[j].type = 0;
@@ -418,7 +441,7 @@ void AddGame() {
 
     gameFormNum++;
 
-    printf("å·²æ·»åŠ ");
+    printf("ÒÑÌí¼Ó\n");
 }
 
 #endif //CDAILY_FUNCTION_H
