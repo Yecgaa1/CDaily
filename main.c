@@ -1,50 +1,50 @@
-#include<stdio.h>
-#include "function.h"
-#include <string.h>
-void run()
-{
-    printf("校际运动会管理系统程序\n"
-           "1.添加成绩\n"
-           "2.添加比赛\n"
-           "3.添加学校\n"
-           "4.修改记录\n"
-           "5.排名\n"
-           "6.退出！\n"
-           "Author:Xutongxin\n");
-    int i=0;
-    scanf("%d", &i);
+#include <stdio.h>
+#include <mem.h>
 
-    switch(i) {
-        case 1: {
-            AddScore();
-            run();
+//
+// Created by yao on 2020/12/22
+int main() {
+    int i = 0, j = 0;
+    //scanf("%d %d",&i,&j);
+    FILE *fp1;
+    char filename1[] = "./Form.txt"; //文件名
+    fp1 = fopen(filename1, "r");
+    char StrLine[1024];
+    memset(StrLine, 0, sizeof(StrLine));
+    fgets(StrLine, 1024, fp1);
+    i = (int) (StrLine[0] - '0');
+    j = (int) (StrLine[2] - '0');
+
+    double A[i][j + j];
+    memset(A, 0, sizeof(A));
+    int i1 = 0;
+
+    while (i1 < i) {
+        memset(StrLine, 0, sizeof(StrLine));
+        fgets(StrLine, 1024, fp1);
+        int j1 = 0;//当前读到的列
+        while (j1 < j) {
+            A[i1][j1] = (int) (StrLine[j1 * 2] - '0');
+            j1+=1;
         }
-        case 2: {
-            AddGame();
-            run();
-        }
-        case 3: {
-            AddSchool();
-            run();
-        }
-        case 4: {
-            Change();
-            run();
-        }
-        case 5: {
-            Sort();
-            run();
-        }
-        case 6: {
-            Save();
-            exit(0);
-        }
+        i1 += 1;
+
     }
-}
+    i1=0;
+    while(i1<i) {
+        A[i1][j + i1] = 1;
+        i1+=1;
+    }
+    i1=1;
+    int j1=0;
+    int t=0;
+    if (A[])
+    for(;j1<j;j1++)
+    {
 
-int main(){
-    Load();
-    run();
+    }
     return 0;
 }
+
+
 
